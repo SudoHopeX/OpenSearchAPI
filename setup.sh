@@ -3,7 +3,7 @@ set -e                                # exit on error immediately
 USER_NAME=$(logname 2>/dev/null)      # Log the username who ran sudo
 
 # OpenSearchAPI Setup Script - SudoHopeX
-
+# Updated: 7 Feb 2026
 
 # verify script is executed with sudo permissions
 if [ "$EUID" -ne 0 ]; then
@@ -63,10 +63,19 @@ pip install requests beautifulsoup4 flask ddgs curl_cffi nodriver pyvirtualdispl
 sudo tee /usr/local/bin/opensearchapi > /dev/null <<'EOF'
 #!/usr/bin/env bash
 
-echo "SudoHopeX - OpenSearchAPI"
+# echo "SudoHopeX - OpenSearchAPI"
 
 source /opt/OpenSearchAPI/its_venv/bin/activate
-python /opt/OpenSearchAPI/app.py
+
+if [ "$1" == "--bg" ]; then
+  python /opt/OpenSearchAPI/app.py > /dev/null 2>&1 &
+  APP_ID=$!
+  echo "$APP_ID"
+else
+  python /opt/OpenSearchAPI/app.py
+  APP_ID=$!
+  echo "OpenSearchAPI Started with PID: $APP_ID"
+fi
 
 deactivate
 EOF
