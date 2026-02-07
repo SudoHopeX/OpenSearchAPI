@@ -4,14 +4,15 @@
 A minimal Python API to get search results from Google, Bing & DuckDuckGo — **no API keys, free, lightweight**.
 
 
-## Clone the Repo
+## Install via Curl
 ```bash
-git clone https://github.com/SudoHopeX/OpenSearchAPI.git
+curl -fsL https://raw.githubusercontent.com/SudoHopeX/OpenSearchAPI/refs/heads/main/setup.sh | sudo bash
 ```
 
-## 🛠️ Setup
+## Clone the Repo & install
 ```bash
-bash setup.sh
+git clone https://github.com/SudoHopeX/OpenSearchAPI.git && cd OpenSearchAPI
+sudo bash setup.sh
 ```
 
 ## start the app
@@ -22,14 +23,19 @@ opensearchapi --bg   # Runs in background
 
 ## 🌐 API Endpoints
 
+### Read Detailed Documentation
+```
+http://127.0.0.1:5000/
+```
+
 ### Single engine search
 ```
-http://localhost:5000/search?q=python&engine=duckduckgo
+http://127.0.0.1:5000/search?q=python&engine=duckduckgo
 ```
 
 ### Multiple engine search
 ```
-http://localhost:5000/mega/search?engines=duckduckgo,bing&q=sudohopex
+http://127.0.0.1:5000/mega/search?engines=duckduckgo,bing&q=sudohopex
 ```
 
 ## ✅ Engines Supported
@@ -37,7 +43,7 @@ http://localhost:5000/mega/search?engines=duckduckgo,bing&q=sudohopex
 - `duckduckgo`
 - `bing`
 
-## 
+##  
 <div align="center">
   <a href="https://hope.is-a.dev">
     <img src="https://hope.is-a.dev/img/made-with-love-by-sudohopex.png" style="width:300px;height:auto;" alt="Made with L0V3 by SudoHopeX">
