@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenSearchAPI API | Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Light Glass Theme */
+      --bg-gradient: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+                      radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
+                      radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --text-main: #1e293b;
+      --text-dim: #475569;
+      --accent: #6366f1;
+      --code-bg: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg-gradient: radial-gradient(at 0% 0%, #0f172a 0, transparent 50%),
+                      radial-gradient(at 50% 0%, #1e1b4b 0, transparent 50%),
+                      radial-gradient(at 100% 0%, #312e81 0, transparent 50%);
+      --glass-bg: rgba(15, 23, 42, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f1f5f9;
+      --text-dim: #94a3b8;
+      --accent: #818cf8;
+      --code-bg: rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #0f172a; /* Fallback */
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      transition: background 0.5s ease;
+    }
+
+    /* Layout Structure */
+    .app-container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px 20px;
+      gap: 30px;
+    }
+
+    /* Glass Sidebar */
+    .sidebar {
+      width: 280px;
+      height: fit-content;
+      position: sticky;
+      top: 40px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: -0.5px;
+      margin-bottom: 30px;
+      padding-left: 10px;
+      background: linear-gradient(to right, var(--accent), #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-btn {
+      all: unset;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      color: var(--text-dim);
+      font-weight: 500;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    }
+
+    .github-link {
+      margin-top: 20px;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 20px;
+      text-decoration: none;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 50px;
+      min-height: 600px;
+      position: relative;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography */
+    h1 { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800; }
+    h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--accent); }
+    p { color: var(--text-dim); line-height: 1.6; margin-bottom: 1.5rem; }
+
+    /* Glass Code Blocks */
+    .code-wrapper {
+      background: var(--code-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      margin: 15px 0;
+      position: relative;
+      cursor: pointer;
+      overflow-x: auto;
+      transition: transform 0.2s;
+    }
+
+    .code-wrapper:hover {
+      transform: scale(1.01);
+    }
+
+    .code-wrapper::after {
+      content: "Click to copy";
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    /* Engine Pills */
+    .engine-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .engine-pill {
+      padding: 8px 20px;
+      background: var(--glass-border);
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: 0.3s;
+    }
+
+    .engine-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Transparent & Minimalist Toggle */
+    .theme-toggle {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: transparent; /* Removed background */
+      border: none;             /* Removed border */
+      cursor: pointer;
+      color: var(--text-main);
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+      opacity: 0.7;
+    }
+
+    .theme-toggle:hover {
+      opacity: 1;
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .theme-toggle svg {
+      transition: stroke 0.3s ease;
+    }
+
+    /* Mobile */
+    @media (max-width: 850px) {
+      .app-container { flex-direction: column; }
+      .sidebar { width: 100%; position: static; }
+      .main-content { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="logo">OpenSearchAPI</div>
+      <button class="nav-btn active" onclick="showTab('home')">Home</button>
+      <button class="nav-btn" onclick="showTab('installation')">Installation</button>
+      <button class="nav-btn" onclick="showTab('launcher')">Launcher</button>
+      <button class="nav-btn" onclick="showTab('requirements')">Requirements</button>
+      <button class="nav-btn" onclick="showTab('endpoints')">Endpoints & Engines</button>
+      <button class="nav-btn" onclick="showTab('usage')">Usage Examples</button>
+
+      <a href="https://github.com/SudoHopeX/OpenSearchAPI" target="_blank" class="nav-btn github-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        OpenSearchAPI GitHub Repo
+      </a>
+      <a href="https://hope.is-a.dev/Link-tree" target="_blank" class="nav-btn link-tree">
+         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="#808184" d="M0.034,16.668C0.388,25.179,7.403,32,16,32s15.612-6.821,15.966-15.332C31.985,16.615,32,16.56,32,16.5 c0-0.036-0.013-0.067-0.02-0.1C31.983,16.266,32,16.135,32,16c0-8.822-7.178-16-16-16S0,7.178,0,16c0,0.135,0.017,0.266,0.02,0.4 C0.013,16.433,0,16.464,0,16.5C0,16.56,0.015,16.615,0.034,16.668z M24.921,22.741c-1.319-0.552-2.735-0.979-4.215-1.271 c0.158-1.453,0.251-2.962,0.28-4.47h4.98C25.875,19.055,25.51,20.994,24.921,22.741z M26.965,17h3.984 c-0.186,2.806-1.138,5.402-2.662,7.578c-0.759-0.533-1.577-1.018-2.457-1.44C26.474,21.269,26.871,19.196,26.965,17z M12.389,22.286C13.567,22.102,14.776,22,16.001,22c1.224,0,2.432,0.102,3.61,0.286C18.916,27.621,17.4,31,16,31 C14.6,31,13.084,27.621,12.389,22.286z M13.908,30.664c-2.751-0.882-5.078-3.471-6.482-6.984c1.246-0.525,2.586-0.935,3.989-1.217 C11.875,25.958,12.713,29.005,13.908,30.664z M12.275,10.709C13.491,10.897,14.739,11,16,11c1.261,0,2.509-0.103,3.725-0.291 C19.898,12.329,20,14.097,20,16h-8C12,14.097,12.102,12.329,12.275,10.709z M19.985,17c-0.028,1.525-0.118,2.961-0.26,4.291 C18.509,21.103,17.262,21,16.001,21c-1.262,0-2.51,0.104-3.726,0.291c-0.141-1.33-0.232-2.766-0.26-4.291H19.985z M20.585,22.463 c1.404,0.282,2.743,0.692,3.989,1.217c-1.404,3.513-3.731,6.102-6.482,6.985C19.287,29.005,20.125,25.958,20.585,22.463z M21,16 c0-1.836-0.101-3.696-0.294-5.471c1.48-0.292,2.896-0.72,4.215-1.271C25.605,11.288,26,13.574,26,16H21z M20.585,9.537 c-0.46-3.496-1.298-6.542-2.492-8.201c2.751,0.882,5.078,3.471,6.482,6.984C23.328,8.845,21.988,9.255,20.585,9.537z M19.611,9.714 C18.433,9.898,17.224,10,16,10c-1.224,0-2.433-0.102-3.611-0.286C13.084,4.379,14.6,1,16,1S18.916,4.379,19.611,9.714z M11.415,9.537C10.012,9.256,8.672,8.845,7.426,8.32c1.404-3.513,3.731-6.102,6.482-6.984C12.713,2.995,11.875,6.042,11.415,9.537z M11.294,10.529C11.102,12.304,11,14.164,11,16H6c0-2.426,0.395-4.712,1.079-6.742C8.398,9.81,9.814,10.237,11.294,10.529z M11.014,17c0.029,1.508,0.122,3.017,0.28,4.471c-1.48,0.293-2.896,0.72-4.215,1.271C6.49,20.995,6.125,19.055,6.034,17H11.014z M6.17,23.139c-0.88,0.422-1.697,0.907-2.457,1.44C2.189,22.403,1.237,19.807,1.051,17h3.984C5.129,19.196,5.526,21.27,6.17,23.139 z M4.313,25.38c0.685-0.479,1.417-0.921,2.207-1.305c1.004,2.485,2.448,4.548,4.186,5.942C8.18,29.06,5.977,27.45,4.313,25.38z M21.294,30.017c1.738-1.394,3.182-3.458,4.186-5.943c0.79,0.384,1.522,0.826,2.207,1.305C26.023,27.449,23.82,29.06,21.294,30.017 z M27,16c0-2.567-0.428-4.987-1.17-7.139c0.88-0.422,1.698-0.907,2.457-1.44C29.991,9.855,31,12.81,31,16H27z M27.688,6.621 c-0.685,0.479-1.417,0.921-2.207,1.305c-1.004-2.485-2.449-4.549-4.186-5.943C23.82,2.94,26.023,4.55,27.688,6.621z M10.706,1.983 C8.968,3.377,7.524,5.441,6.519,7.926C5.729,7.542,4.997,7.1,4.312,6.62C5.977,4.55,8.18,2.94,10.706,1.983z M3.713,7.421 C4.472,7.954,5.29,8.439,6.17,8.861C5.428,11.013,5,13.433,5,16H1C1,12.81,2.009,9.855,3.713,7.421z"></path> </g> </g></svg>
+        SudoHopeX - Linktree
+      </a>
+      <br>
+    </aside>
+    <main class="main-content">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle Theme">
+          <svg id="themeIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+      </button>
+
+      <section id="home" class="tab-content active">
+      <div style="text-align: center; margin-bottom: 50px;">
+        <h1 style="font-size: 3.5rem; margin-bottom: 10px;">OpenSearchAPI</h1>
+        <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">
+          A high-performance, open-source gateway to global search results. <br>
+          No restrictions, just pure data.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>💎 100% Free</h4>
+          <p>Completely open-source and free to use for any project except Commercial Usages.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔑 No API Keys</h4>
+          <p>Zero registration. Start querying immediately without headers.</p>
+        </div>
+        <div class="feature-card">
+          <h4>☁️ Lightweight</h4>
+          <p>Small footprint, designed to run on minimal server resources.</p>
+        </div>
+        <div class="feature-card">
+          <h4>⚡ Fast Scraping</h4>
+          <p>Optimized with headless drivers for rapid data retrieval.</p>
+        </div>
+      </div>
+
+      <div class="dev-card">
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <div class="dev-avatar">S</div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">Developed by SudoHopeX</h3>
+            <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Cyber Security (Ethical Hacking) & Open Source Dev Enthusiast</p>
+          </div>
+        </div>
+        <p style="margin-top: 15px; font-size: 0.9rem; line-height: 1.5;">
+          OpenSearchAPI was built to provide developers with an easy, unrestricted way to aggregate search data without the hurdles of expensive subscriptions or rate-limited API keys.
+        </p>
+        <p style="margin-top: 15px; font-size: 0.9rem; line-height: 1.5;">
+          <strong>⭐ Consider giving a star if you liked this project.</strong>
+        </p>
+      </div>
+    </section>
+
+      <section id="installation" class="tab-content">
+        <h1>Installation</h1>
+        <p>Set up the OpenSearchAPI API in seconds using the command line.</p>
+
+        <h2>Clone & Setup</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">git clone https://github.com/SudoHopeX/OpenSearchAPI.git</div>
+        <div class="code-wrapper" onclick="copyCode(this)">bash setup.sh</div>
+
+        <h2>Direct Download</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">curl -fsL https://raw.githubusercontent.com/SudoHopeX/OpenSearchAPI/refs/heads/main/setup.sh | sudo bash</div>
+      </section>
+
+      <section id="launcher" class="tab-content">
+          <h1>Starting via Launcher ( in Linux )</h1>
+          <h2>Runs in foreground</h2>
+          <div class="code-wrapper" onclick="copyCode(this)">opensearchapi</div>
+          <h2>Runs in background</h2>
+          <div class="code-wrapper" onclick="copyCode(this)">opensearchapi --bg</div>
+
+          <h1>Starting via python</h1>
+          <h2>Runs in foreground</h2>
+          <div class="code-wrapper" onclick="copyCode(this)">python /path/to/app.py</div>
+          <p align="center">OR</p>
+          <div class="code-wrapper" onclick="copyCode(this)">python3 /path/to/app.py</div>
+      </section>
+
+      <section id="requirements" class="tab-content">
+  <h1>Requirements</h1>
+  <p>Ensure your environment meets these specifications for optimal performance.</p>
+
+  <br><br>
+  <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: var(--text-main); opacity: 0.9;">1. System Packages</h3>
+  <div class="engine-grid" style="margin-bottom: 30px;">
+    <div class="engine-pill">Python 3.13+</div>
+    <div class="engine-pill">xvfb</div>
+    <div class="engine-pill">Chrome / Chromium Browser</div>
+  </div>
+
+  <br><br>
+  <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: var(--text-main); opacity: 0.9;">2. Pip Packages</h3>
+  <div class="engine-grid">
+    <div class="engine-pill">requests</div>
+    <div class="engine-pill">flask</div>
+    <div class="engine-pill">beautifulsoup4</div>
+    <div class="engine-pill">curl_cffi</div>
+    <div class="engine-pill">nodriver</div>
+    <div class="engine-pill">ddgs</div>
+    <div class="engine-pill">pyvirtualdisplay</div>
+  </div>
+</section>
+
+      <section id="endpoints" class="tab-content">
+        <h1>Endpoints</h1>
+        <p>Access various search engines through a unified interface.</p>
+
+        <h2>Documentation</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">GET http://{{ host }}/</div>
+
+        <h2>Standard Search</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">GET http://{{ host }}/search?q=query&engine=duckduckgo</div>
+
+        <h2>Multi-Engine (Mega)</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">GET http://{{ host }}/mega/search?q=query&engines=google,bing</div>
+
+        <br><br>
+        <h1>Supported Engines</h1>
+        <div class="engine-grid">
+          <div class="engine-pill">Google</div>
+          <div class="engine-pill">DuckDuckGo</div>
+          <div class="engine-pill">Bing</div>
+        </div>
+      </section>
+
+      <section id="usage" class="tab-content">
+        <h1>Usage Examples</h1>
+        <p>Integrate the API into your project using these common snippets.</p>
+
+        <h2>Curl</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">
+curl https://{{ host }}/search?q=SudoHopeX&engine=duckduckgo
+        </div>
+        <div class="code-wrapper" onclick="copyCode(this)">
+curl https://{{ host }}/mega/search?q=SudoHopeX&engines=duckduckgo,google,bing
+        </div>
+
+        <h2>Python Requests</h2>
+        <div class="code-wrapper" onclick="copyCode(this)">
+import requests<br><br>
+query = "Photography"<br>
+engine = "google"<br>
+url = f"http://{{ host }}/search&q={query}&engine={engine}"<br>
+data = requests.get(url).json()<br>
+print(data)
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      // Update buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const current = body.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-theme', next);
+
+        const iconPath = document.getElementById('themeIcon');
+
+        // Smoothly swap the SVG inner content
+        if (next === 'dark') {
+          iconPath.innerHTML = `
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+        } else {
+          iconPath.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+        }
+    }
+
+    async function copyCode(el) {
+      const text = el.innerText.replace("Click to copy", "");
+      await navigator.clipboard.writeText(text);
+      const originalText = el.innerText;
+      el.innerText = "Copied to clipboard!";
+      setTimeout(() => { el.innerText = originalText; }, 1500);
+    }
+  </script>
+</body>
+</html>
