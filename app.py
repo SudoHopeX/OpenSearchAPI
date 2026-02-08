@@ -8,7 +8,7 @@ ENGINES = ["google", "duckduckgo", "bing"] #, "brave"]
 @app.route("/search")
 def handle_search():
     query = request.args.get("q")
-    engine = request.args.get("engine", "google").lower()
+    engine = request.args.get("engines", "duckduckgo").lower()
 
     if not query:
         return jsonify({"error": "Missing query parameter 'q'"}), 400
@@ -57,3 +57,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(port=5000, debug=False, threaded=True)
+
