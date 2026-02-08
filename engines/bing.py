@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # /engines/bing.py
-# Last Updated: 4 feb 2026
+# Last Updated: 8 feb 2026
 
 
 import random
@@ -17,6 +17,7 @@ class BingSearchEngine:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
         ]
+        self.parsed_results = []
 
 
     def _get_headers(self):
@@ -69,10 +70,8 @@ class BingSearchEngine:
 
         return all_results
 
-    @staticmethod
     def _parse_results(self, html):
         soup = BeautifulSoup(html, "html.parser")
-        parsed_results = []
 
         # Primary container for search results
         for item in soup.select("li.b_algo"):
@@ -85,13 +84,13 @@ class BingSearchEngine:
                 if link.startswith("/ck/"):
                     continue  # Skip internal tracker links
 
-                parsed_results.append({
+                self.parsed_results.append({
                     "title": title_node.get_text(strip=True),
                     "link": link,
                     "desc": snippet_node.get_text(strip=True) if snippet_node else "No description available."
                 })
 
-        return parsed_results
+        return self.parsed_results
 
 
 def bing_search(query):
