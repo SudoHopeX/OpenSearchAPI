@@ -43,9 +43,12 @@ http://127.0.0.1:5000/mega/search?engines=duckduckgo,bing&q=sudohopex
 - `duckduckgo`
 - `bing`
 
+#### [Read detailed Documentation](https://hope.is-a.dev/OpenSearchAPI/)
+
 ##  
 <div align="center">
   <a href="https://hope.is-a.dev">
     <img src="https://hope.is-a.dev/img/made-with-love-by-sudohopex.png" style="width:300px;height:auto;" alt="Made with L0V3 by SudoHopeX">
   </a>
 </div>   
+
